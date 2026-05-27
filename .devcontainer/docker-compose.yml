@@ -1,0 +1,27 @@
+services:
+  app:
+    image: mcr.microsoft.com/devcontainers/python:3.11
+    volumes:
+      - ..:/workspace:cached
+    working_dir: /workspace
+    command: sleep infinity
+    depends_on:
+      - mongo
+      - redis
+    environment:
+      MONGO_URI: mongodb://mongo:27017
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+
+  # Fuente de verdad: persistimos los datos en un volumen
+  mongo:
+    image: mongo:latest
+    volumes:
+      - mongo_data:/data/db
+
+  # Capa de caché: no persiste por diseño.
+  redis:
+    image: redis:latest
+
+volumes:
+  mongo_data:
